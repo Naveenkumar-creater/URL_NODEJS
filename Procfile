@@ -1,1 +1,2 @@
-web: node server.js
+/node_modules
+web: node index.js
