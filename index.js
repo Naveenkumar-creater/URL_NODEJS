@@ -1,12 +1,23 @@
 const express = require('express');
 const app = express();
+const dotenv=require("dotenv");
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
 
-mongoose.connect("mongodb://localhost:27017/cruddb", { useUnifiedTopology: true ,useNewUrlParser: true} );
+dotenv.config();
+
+const connect =  async() => {
+    try {
+     await mongoose.connect(process.env.URL,{ useNewUrlParser: true,useUnifiedTopology: true });
+      console.log("Connected to mongoDB.");
+    } catch (error) {
+      throw error;
+    }
+  };
 
 const { UrlModel } = require('./models/urlshort');
 // Midleware
+app.use(express.json());
 app.use(express.static('public'));
 app.set('view engine', "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -52,7 +63,10 @@ app.get('/delete/:id',function(req,res){
     })
 })
 
-app.listen(3000, function () {
+const port=process.env.PORT||3000;
+
+app.listen(port, function () {
+    connect();
     console.log('Port is running in 3000')
 });
 
